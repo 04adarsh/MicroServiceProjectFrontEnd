@@ -9,9 +9,12 @@ import { UserService } from '../services/user.service';
 export class NavbarComponent {
 
   isLoggedIn!:any;
+  username:any;
 
   ngOnInit(){
 this.isLoggedIn=this.userService.isLoggedIn();
+this.username=this.userService.getUserName();
+
   }
   constructor(private userService:UserService){}
 

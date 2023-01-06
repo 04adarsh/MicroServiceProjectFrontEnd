@@ -1,10 +1,13 @@
 <div class="container  ">
 
     <div class="row">
-        <div class="col-lg-4 col-md-4 mx-auto">
+        <div class="col-lg-4 col-md-7 col-sm-8 col-12 mx-auto">
             <div class="card mt-5">
                 <p class="text-center mt-3">Login Here</p>
+                
                 <form [formGroup]="loginData" style="width: 80%;" class="mx-auto mt-3">
+                  <div *ngIf="loginData.invalid" class="text-danger" style="font-size:14px ;">* All fields
+                    are required.</div>
                     <div class="input-group mb-4">
                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-circle"></i></span>
                         <input type="text" formControlName="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
@@ -15,7 +18,7 @@
                         <input type="password" formControlName="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
                       </div>
                      
-                        <button class="btn btn-primary btn-sm" style="width:100%;" (click)="userLogin()" >Login</button>
+                        <button class="btn btn-primary btn-sm" [disabled]="!loginData.valid" style="width:100%;" (click)="userLogin()" >Login</button>
                       
                       <hr>
                       <div class="already mb-3" style="font-size: 14px;">

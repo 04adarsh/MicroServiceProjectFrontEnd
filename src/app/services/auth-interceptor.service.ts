@@ -24,7 +24,7 @@ export class AuthInterceptorService implements HttpInterceptor{
 
            return  this.handleRefreshToken(req,next);
           }
-          return throwError(errordata);
+          return next.handle(errordata);
         })
       );
 

@@ -1,7 +1,22 @@
 .navbar{
     box-shadow: 0 2px 2px -2px rgba(0,0,0,.2);
+    /* background-color: #0F1111; */
+}
+/* .navbar-brand{
+    color:white;
 }
 
+.collapse ul li a{
+    color: white;
+}
+
+.dropdown ul li a{
+    color: black;
+}
+
+.navbar-toggler{
+    color: white;
+} */
 /* .navbar-nav li a::after {
     content: "";
     width: 0%;

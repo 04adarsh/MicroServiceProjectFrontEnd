@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from '../services/user.service';
-import {FormBuilder, FormGroup} from "@angular/forms"
+import {FormBuilder, FormGroup, Validators} from "@angular/forms"
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 @Component({
@@ -23,8 +23,8 @@ export class LoginComponent {
 
   ngOnInit(){
     this.loginData=this.formBuilder.group({
-      username:[''],
-      password:['']
+      username:['',Validators.required],
+      password:['',Validators.required]
     })
   }
 
@@ -37,10 +37,26 @@ export class LoginComponent {
       this.loginData.reset();
       let accessToken=res.accessToken;
       let refreshToken=res.refreshToken;
+      let username=res.username;
+      console.log(username)
+      this.userService.saveUserName(username);
       this.userService.saveTokens(accessToken,refreshToken);
-      this.route.navigate(['dashboard']);
+
+      this.loginData.reset();
+      let roles: Array<string>;
+      roles=res.roles;
+      this.userService.saveRoles(roles);
+      if(roles.includes("ROLE_ADMIN")){
+        this.route.navigate(['admin-dashboard'])
+      }
+      else if(roles.includes("ROLE_USER") && roles.includes("ROLE_ADMIN")){
+        this.route.navigate(['admin-dashboard'])
+      }
+      else{
+        this.route.navigate(['dashboard']);
+      }
     },err=>{
-      console.log(err);
+      this.toastr.error('Error', 'Invalid Credentials');
     })
 
   }

@@ -13,6 +13,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { AdminDashboardComponent } from './admin-panel/admin-dashboard/admin-dashboard.component';
+import { AdminpanelNavbarComponent } from './admin-panel/adminpanel-navbar/adminpanel-navbar.component';
+import { ProductComponent } from './admin-panel/product/product.component';
+import { UsersComponent } from './admin-panel/users/users.component';
+import { NgxUiLoaderModule, NgxUiLoaderHttpModule } from "ngx-ui-loader";
+import { CategoryComponent } from './admin-panel/category/category.component';
 
 
 @NgModule({
@@ -22,7 +28,13 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
     RegisterComponent,
     LoginComponent,
     HomeComponent,
-    DashboardComponent
+    DashboardComponent,
+    AdminDashboardComponent,
+    AdminpanelNavbarComponent,
+    ProductComponent,
+    UsersComponent,
+    CategoryComponent,
+ 
   ],
   imports: [
     BrowserModule,
@@ -30,6 +42,10 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
     HttpClientModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
+    NgxUiLoaderModule,
+    NgxUiLoaderHttpModule.forRoot({
+      showForeground:true
+    }),
     ToastrModule.forRoot()
   ],
   providers: [

@@ -26,6 +26,11 @@ export class UserService {
     return this.http.post(`${this.BASE_URL}/app/login`,loginData);
   }
 
+
+  getAllUsers(){
+    return this.http.get("http://localhost:9090/api/v1/user/get");
+  }
+
   generateRefreshToken(){
 
   
@@ -37,28 +42,28 @@ export class UserService {
   }
 
   saveAccessToken(accessToken:string){
-    return localStorage.setItem('accessToken',accessToken);
+    return window.sessionStorage.setItem("accessToken",accessToken);
   }
 
   saveRefreshToken(refreshToken:string){
-    return localStorage.setItem('refreshToken',refreshToken);
+    return window.sessionStorage.setItem('refreshToken',refreshToken);
   }
 
   clear(){
     return localStorage.clear();
   }
   public getAccessToken() {
-    return localStorage.getItem('accessToken');
+    return window.sessionStorage.getItem('accessToken');
   }
 
   public getRefreshToken(){
-    return localStorage.getItem('refreshToken');
+    return window.sessionStorage.getItem('refreshToken');
     
   }
 
   public saveTokens(accessToken:string,refreshToken:string){
-    localStorage.setItem('accessToken',accessToken);
-    localStorage.setItem('refreshToken',refreshToken);
+    window.sessionStorage.setItem('accessToken',accessToken);
+    window.sessionStorage.setItem('refreshToken',refreshToken);
     return true;
   }
 
@@ -67,8 +72,25 @@ export class UserService {
   }
 
   logout():void{
-    localStorage.clear();
+    window.sessionStorage.clear();
     this.router.navigate(['login']);
   }
+
+saveRoles(roles:any){
+  window.sessionStorage.setItem('roles',roles);
+  return true;
+}
+
+getUserRoles(){
+  return window.sessionStorage.getItem('roles');
+}
+
+saveUserName(username:string){
+  return window.sessionStorage.setItem("username",username);
+}
+
+getUserName(){
+  return window.sessionStorage.getItem("username");
+}
 
 }

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
-        <div class="col-lg-5 col-md-4 mx-auto">
-            <div class="card mt-5 mb-4" style="width: 80%;">
+        <div class="col-lg-5 col-md-7 col-sm-8 col-12 mx-auto">
+            <div class="card mt-5 mb-4 mx-auto">
                 <p class="text-center mt-3">Create Account</p>
                 <form [formGroup]="formData" style="width: 80%;" class="mx-auto">
                   <span *ngIf="formData.invalid" class="text-danger" style="font-size:14px ;">* All fields
@@ -9,7 +9,6 @@
                         <div class="input-group mb-4">
                             <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-circle"></i></span>
                             <input type="text" class="form-control" formControlName="username" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-                            <span *ngIf="">*username is required</span>
                           </div>
                           <div class="input-group mb-4">
                             <span class="input-group-text" id="basic-addon1"><i class="bi bi-envelope-at-fill"></i></span>
@@ -25,12 +24,7 @@
                       <hr style="width: 100%;">
                       <div class="already mb-3" style="font-size: 14px;">
                         <span>Already Registered? </span><a routerLink="/login">LOGIN HERE</a>
-                      </div>
-                    
-                      
-                      
-                      
-                      
+                      </div>  
                 </form>
             </div>
         </div>
