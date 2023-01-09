@@ -15,7 +15,6 @@ import { CategoryComponent } from './admin-panel/category/category.component';
 const routes: Routes = [
   {
     path:"",
-    pathMatch:"full",
     component:HomeComponent
   },
   {

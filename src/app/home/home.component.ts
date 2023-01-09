@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { ProductService } from '../services/product.service';
 
 @Component({
   selector: 'app-home',
@@ -6,5 +7,18 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+
+
+
+
+  constructor(private productService:ProductService){
+    
+  }
+
+  ngOnInit(){
+   
+  }
+
+
 
 }

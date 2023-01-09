@@ -5,5 +5,10 @@
 <div class="container">
     <router-outlet></router-outlet>
 </div>
-
+<div class="container">
+    <form action="">
+        <input type="file" multiple (change)="onFileSelected($event)">
+        <button class="btn btn-primary"type="submit" (click)="uploadImages()">upload</button>
+    </form>
+</div>
 

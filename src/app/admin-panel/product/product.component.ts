@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms"
+import { FormBuilder, FormGroup, Validators } from "@angular/forms"
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ToastrService } from 'ngx-toastr';
+import { FileHandle } from 'src/app/models/file-handle.model';
+import { Product } from 'src/app/models/product.model';
 import { CategoryService } from 'src/app/services/category.service';
+import { ImageService } from 'src/app/services/image.service';
 import { ProductService } from '../../services/product.service';
+
 
 @Component({
   selector: 'app-product',
@@ -11,113 +16,128 @@ import { ProductService } from '../../services/product.service';
 })
 export class ProductComponent {
 
-  product={
-    productName:"",
-    productDescription:"",
+  product= {
+    productName: "",
+    productDescription: "",
+    categoryName: "",
     productImageUrl:"",
-    categoryName:"",
-    quantity:""
+    quantity: 0
 
   }
 
-  productId!:number;
-  allProducts:any;
-  formData!:FormGroup;
+  productImage!:FileHandle[];
 
-  showAdd!:boolean;
-  showUpdate!:boolean;
+  productId!: number;
+  allProducts: any;
+  formData!: FormGroup;
 
-  categories:any;
 
-  constructor(private productService:ProductService,private formBuilder:FormBuilder,private toastr:ToastrService,private categoryService:CategoryService){
-   
+  showAdd!: boolean;
+  showUpdate!: boolean;
+
+  categories: any;
+
+  constructor(private productService: ProductService, private formBuilder: FormBuilder,
+    private toastr: ToastrService, private categoryService: CategoryService, 
+    private sanitizer: DomSanitizer,private imageService:ImageService) {
+
   }
 
-  ngOnInit(){
-    this.formData=this.formBuilder.group({
-      productName:['',Validators.required],
-      productDescription:['',Validators.required],
+  ngOnInit() {
+    this.formData = this.formBuilder.group({
+      productName: ['', Validators.required],
+      productDescription: ['', Validators.required],
+      categoryName: ['', Validators.required],
       productImageUrl:['',Validators.required],
-      categoryName:['',Validators.required],
-      quantity:['',Validators.required]
-    
-  })
- this.getAllCategories();
- this.getAllProduct();
+      quantity: ['', Validators.required]
+
+    })
+     this.getAllCategories();
+     this.getAllProduct();
 
 
-}
+  }
 
-onAdd(){
-  this.showAdd=true;
-  this.showUpdate=false;
-}
+  onAdd() {
+    this.showAdd = true;
+    this.showUpdate = false;
+  }
 
-addProduct(){
-  this.product=this.formData.value;
-  this.productService.createProduct(this.product).subscribe((res:any)=>{
+  addProduct() {
+    this.product=this.formData.value
+    // const productFormData=this.prepareFormData(this.product);
+    // const images=this.prepareFormData();
+    // console.log(images);
+    this.productService.createProduct(this.product).subscribe((res: any) => {
+      console.log(res);
+      // this.imageService.uploadImages(images).subscribe((res:any)=>{
+      //   console.log(res);
+      // })
+      this.toastr.success("Success", "product created successfully")
+      this.getAllProduct();
+      document.getElementById("closemodal")?.click();
+      this.formData.reset();
+
+    }, err => {
+      this.toastr.error("Error", "something went wrong");
+    })
+  }
+
+  getAllProduct(){
+    this.productService.getAllProduct().subscribe((res:any)=>{
+      this.allProducts=res;
+
+    },err=>{
+      console.log("cannot fetch product list");
+    })
+  }
+
+  deleteProduct(productId:number){
+    this.productService.deleteProduct(productId).subscribe((res:any)=>{
+      console.log(res);
+      this.toastr.success("Success","product deleted successfully..")
+      this.getAllProduct();
+    },err=>{
+      console.log(err);
+    })
+
+  }
+
+  onEdit(product:any){
+    this.showAdd=false;
+    this.showUpdate=true;
+    this.productId=product.productId;
+    this.formData.controls['productName'].setValue(product.productName);
+    this.formData.controls['productDescription'].setValue(product.productDescription);
+    this.formData.controls['productImageUrl'].setValue(product.productImageUrl);
+    this.formData.controls['categoryName'].setValue(product.category.categoryName);
+    this.formData.controls['quantity'].setValue(product.quantity);
+  }
+
+
+
+  updateProduct(){
+    this.product=this.formData.value;
+   this.productService.updateProduct(this.productId,this.product).subscribe((res:any)=>{
     console.log(res);
-    this.toastr.success("Success","product created successfully")
-    this.getAllProduct();
+    this.toastr.success("Success","Product Updated Successfully..")
     document.getElementById("closemodal")?.click();
     this.formData.reset();
-
-  },err=>{
-    this.toastr.error("Error","something went wrong");
-  })
-}
-
-getAllProduct(){
-  this.productService.getAllProduct().subscribe((res:any)=>{
-    this.allProducts=res;
-   
-  },err=>{
-    console.log("cannot fetch product list");
-  })
-}
-
-deleteProduct(productId:number){
-  this.productService.deleteProduct(productId).subscribe((res:any)=>{
-    console.log(res);
-    this.toastr.success("Success","product deleted successfully..")
     this.getAllProduct();
-  },err=>{
-    console.log(err);
-  })
-
-}
-
-onEdit(product:any){
-  this.showAdd=false;
-  this.showUpdate=true;
-  this.productId=product.productId;
-  this.formData.controls['productName'].setValue(product.productName);
-  this.formData.controls['productDescription'].setValue(product.productDescription);
-  this.formData.controls['productImageUrl'].setValue(product.productImageUrl);
-}
-
-
-
-updateProduct(){
-  this.product=this.formData.value;
- this.productService.updateProduct(this.productId,this.product).subscribe((res:any)=>{
-  console.log(res);
-  this.toastr.success("Success","Product Updated Successfully..")
-  document.getElementById("closemodal")?.click();
-  this.formData.reset();
-  this.getAllProduct();
- },err=>{
-  this.toastr.error("something went wrong..")
- })
-}
-
-getAllCategories(){
-  this.categoryService.getAllCategory().subscribe((res:any)=>{
-    console.log(res);
-    this.categories=res;
-  
-  },err=>{
-    console.log(err);
-  })
-}
+   },err=>{
+    this.toastr.error("something went wrong..")
+   })
   }
+
+  getAllCategories(){
+    this.categoryService.getAllCategory().subscribe((res:any)=>{
+      console.log(res);
+      this.categories=res;
+
+    },err=>{
+      console.log(err);
+    })
+  }
+
+
+}

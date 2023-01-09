@@ -53,16 +53,16 @@
               </div>
               <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Product Description</label>
-                <textarea class="form-control" formControlName="productDescription" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea class="form-control" formControlName="productDescription" id="exampleFormControlTextarea1" rows="3" placeholder="Product Description"></textarea>
               </div>
-              <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Image url</label>
+              <!-- <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Image</label>
                 <input type="text" class="form-control" formControlName="productImageUrl" id="exampleFormControlInput1" placeholder="Image Url">
-              </div>
+              </div>     -->
               <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Category</label>
-                <select class="form-select" aria-label="Default select example" formControlName="categoryName">
-                  <option selected></option>
+                <select class="form-select" aria-label="Default select example" formControlName="categoryName" place>
+                  <option selected="selected"></option>
                   <option [ngValue]="category.categoryName" *ngFor="let category of categories">{{category.categoryName}}</option>
                 </select>    
               </div>
@@ -70,15 +70,18 @@
                 <label for="exampleFormControlInput1" class="form-label">Quantity</label>
                 <input type="number" class="form-control" formControlName="quantity" id="exampleFormControlInput1" placeholder="quantity">
               </div>
-         
+              <!-- <div>
+                <label for="exampleFormControlInput1" class="form-label">Upload Images</label>
+                <input type="file" multiple class="form-control" id="exampleFormControlInput1" 
+                    (change)="onFileSelected($event)">
+              </div>     -->
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closemodal">Close</button>
           <button type="button" class="btn btn-primary" [disabled]="!formData.valid" (click)="addProduct()" *ngIf="showAdd">Add</button>
-          <button type="button" class="btn btn-primary" [disabled]="!formData.valid"(click)="updateProduct()" *ngIf="showUpdate">Update</button>
+          <button type="button" class="btn btn-primary" [disabled]="!formData.valid" *ngIf="showUpdate" (click)="updateProduct()">Update</button>
         </div>
-        <p>{{formData.value | json}}</p>
       </div>
     </div>
   </div>
