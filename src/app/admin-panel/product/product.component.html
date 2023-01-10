@@ -11,7 +11,7 @@
           <th>Product Id</th>
           <th>Product Name</th>
           <th>Product Description</th>
-          <th>Product Image Url</th>
+          <th>Product Image</th>
           <th>Product Category</th>
           <th>Product Quantity</th>
           <th>Action</th>
@@ -22,17 +22,24 @@
           <td>{{product.productId}}</td>
           <td>{{product.productName.substr(0,20)}}</td>
           <td>{{product.productDescription.substr(0,30)}}</td>
-          <td>{{product.productImageUrl}}</td>
+          <td>
+            <img [src]="product.imageName" style="height:50px; width: 40px;">
+          </td>
           <td>{{product.category.categoryName}}</td>
           <td>{{product.quantity}}</td>
           <td>
             <span><i class="bi bi-pencil-square mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal" style=" color:#0D6EFD" (click)="onEdit(product)"></i></span>
-            <span><i class="bi bi-trash3-fill mx-2" style="color: red;" (click)="deleteProduct(product.productId)"></i></span>
+          <span><i class="bi bi-trash3-fill mx-2" style="color: red;" (click)="deleteProduct(product.productId)"></i></span>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+
+  <!-- <div class="container">
+    <input type="file" multiple (change)="onFilesSelected($event)">
+        <button class="btn btn-primary"type="submit" (click)="uploadMultipleImages()">upload</button>
+  </div> -->
 
   
   <!-- Modal -->
@@ -62,7 +69,7 @@
               <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Category</label>
                 <select class="form-select" aria-label="Default select example" formControlName="categoryName" place>
-                  <option selected="selected"></option>
+                  <option selected="selected" hidden></option>
                   <option [ngValue]="category.categoryName" *ngFor="let category of categories">{{category.categoryName}}</option>
                 </select>    
               </div>
@@ -70,11 +77,10 @@
                 <label for="exampleFormControlInput1" class="form-label">Quantity</label>
                 <input type="number" class="form-control" formControlName="quantity" id="exampleFormControlInput1" placeholder="quantity">
               </div>
-              <!-- <div>
+              <div>
                 <label for="exampleFormControlInput1" class="form-label">Upload Images</label>
-                <input type="file" multiple class="form-control" id="exampleFormControlInput1" 
-                    (change)="onFileSelected($event)">
-              </div>     -->
+                <input  type="file" multiple (change)="onFilesSelected($event)">
+              </div>    
           </form>
         </div>
         <div class="modal-footer">

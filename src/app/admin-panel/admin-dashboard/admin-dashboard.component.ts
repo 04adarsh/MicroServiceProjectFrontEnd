@@ -11,65 +11,91 @@ import { ImageService } from 'src/app/services/image.service';
 export class AdminDashboardComponent {
 
 
- images!:FileHandle;
+ images:FileHandle[]=[];
+ image!:FileHandle;
 
- ngOnInit(){
 
- }
+
 
  
  
 
  constructor(private imageService:ImageService,private sanitizer:DomSanitizer){}
+// uploadImages(){
+//   const imageFormData=this.prepareFormData();
+//   this.imageService.uploadImages(imageFormData).subscribe((res:any)=>{
+//     console.log(res)
+//     console.log(res)
+//   },err=>{
+//     console.log(err);
+//   })
 
- uploadImages(){
-  debugger
-  const imageFormData=this.prepareFormData();
-  console.log(imageFormData);
-  this.imageService.uploadImages(imageFormData).subscribe((res:any)=>{
+  
+//  }
+
+ uploadMultipleImages(){
+  const formDatamulti=this.prepareFormData();
+  this.imageService.uploadMultipleImages(formDatamulti).subscribe((res:any)=>{
     console.log(res);
   },err=>{
     console.log(err);
   })
+
  }
 
 
- onFileSelected(event: any) {
-  debugger
-    const file = event.target.files[0];
+//  onFileSelected(event: any) {
+//   console.log(event);
+//   if (event.target.files) {
+//     const file = event.target.files[0];
 
-    const fileHandle: FileHandle = {
-      file: file,
-      url: this.sanitizer.bypassSecurityTrustUrl(
-        window.URL.createObjectURL(file)
-      )
+//     const fileHandle: FileHandle = {
+//       file: file,
+//       url: this.sanitizer.bypassSecurityTrustUrl(
+//         window.URL.createObjectURL(file)
+//       )
+//     }
+//     this.image = fileHandle;
+//   }
+
+// }
+
+onFilesSelected(event:any){
+  console.log(event);
+  if (event.target.files) {
+
+    for(var i=0;i<event.target.files.length;i++){
+      const file = event.target.files[i];
+
+      const fileHandle: FileHandle = {
+        file: file,
+        url: this.sanitizer.bypassSecurityTrustUrl(
+          window.URL.createObjectURL(file)
+        )
+      }
+      this.images.push(fileHandle);
     }
-    this.images=fileHandle;
-    console.log(this.images.file);
-    console.log(this.images.file.name);
-    this.prepareFormData();
-  
+    }
+    
+   
 }
 
 prepareFormData(): FormData {
   const formData: FormData = new FormData();
-debugger
 
-  // for(var i=0;i<this.images.length;i++){
- 
-  
-  // }
 
-     formData.append(
-      'file',
-     this.images.file,
-     this.images.file.name,
-    
-    );
+ for(var i=0;i<this.images.length;i++){
+  formData.append(
+    "files",
+    this.images[i].file,
+    this.images[i].file.name
+  )
+ }
 
-      console.log(formData);
+   
   return formData;
 }
+
   
 
 }

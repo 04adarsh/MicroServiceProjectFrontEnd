@@ -2,12 +2,24 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms"
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ToastrService } from 'ngx-toastr';
+
 import { FileHandle } from 'src/app/models/file-handle.model';
-import { Product } from 'src/app/models/product.model';
 import { CategoryService } from 'src/app/services/category.service';
 import { ImageService } from 'src/app/services/image.service';
 import { ProductService } from '../../services/product.service';
 
+export class Product{
+
+    productId!:number
+    productName!:string
+    productDescription!: string
+    productImages!:string
+    categoryName!: string
+    quantity!:number
+
+
+
+}
 
 @Component({
   selector: 'app-product',
@@ -15,20 +27,21 @@ import { ProductService } from '../../services/product.service';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent {
-
+  images:FileHandle[]=[];
   product= {
+  
     productName: "",
     productDescription: "",
+    productImages:"",
     categoryName: "",
-    productImageUrl:"",
     quantity: 0
 
   }
 
-  productImage!:FileHandle[];
+  productImage!:FileHandle;
 
   productId!: number;
-  allProducts: any;
+  allProducts:any
   formData!: FormGroup;
 
 
@@ -45,15 +58,15 @@ export class ProductComponent {
 
   ngOnInit() {
     this.formData = this.formBuilder.group({
-      productName: ['', Validators.required],
-      productDescription: ['', Validators.required],
-      categoryName: ['', Validators.required],
-      productImageUrl:['',Validators.required],
-      quantity: ['', Validators.required]
+      productName: ['',Validators.required ],
+      productDescription: ['',Validators.required],
+      categoryName: ['',Validators.required ],
+      quantity: ['',Validators.required ]
 
     })
      this.getAllCategories();
      this.getAllProduct();
+     console.log(this.allProducts)
 
 
   }
@@ -63,29 +76,66 @@ export class ProductComponent {
     this.showUpdate = false;
   }
 
-  addProduct() {
-    this.product=this.formData.value
-    // const productFormData=this.prepareFormData(this.product);
-    // const images=this.prepareFormData();
-    // console.log(images);
-    this.productService.createProduct(this.product).subscribe((res: any) => {
-      console.log(res);
-      // this.imageService.uploadImages(images).subscribe((res:any)=>{
-      //   console.log(res);
-      // })
-      this.toastr.success("Success", "product created successfully")
-      this.getAllProduct();
-      document.getElementById("closemodal")?.click();
-      this.formData.reset();
+  // addProduct() {
+  //   this.product=this.formData.value;
+  //   const imageFormData=this.prepareFormData();
+  //   this.imageService.uploadImages(imageFormData).subscribe(({resposne}:any)=>{
+  //     console.log(resposne);
+  //     let image_name=resposne;
+  //     if(image_name!="" || image_name!=null){
+  //       this.product.productImages=image_name;
+  //       this.productService.createProduct(this.product).subscribe((res:any)=>{
+  //         console.log(res);
+  //         this.toastr.success("success","product created successfully");
+  //         document.getElementById("closemodal")?.click();
+  //         this.getAllProduct();
+  //         this.formData.reset();
+        
+  //       },err=>{
+  //         console.log(err);
+  //       })
+  //     }
+    
+  //   })
+  
+  // }
 
-    }, err => {
-      this.toastr.error("Error", "something went wrong");
+  addProduct(){
+    this.product=this.formData.value;
+    const imageFormData=this.prepareFormData();
+    this.imageService.uploadMultipleImages(imageFormData).subscribe((res:any)=>{
+      console.log(res)
+      let list=[];
+      list=res;
+      let image_name=list.toString();
+      if(image_name!="" || image_name!=null){
+        this.product.productImages=image_name;
+        this.productService.createProduct(this.product).subscribe((res:any)=>{
+          console.log(res);
+          this.toastr.success("success","product created successfully");
+          document.getElementById("closemodal")?.click();
+          this.getAllProduct();
+          this.formData.reset();
+        
+        },err=>{
+          console.log(err);
+        })
+      }
+    
     })
+
   }
 
   getAllProduct(){
     this.productService.getAllProduct().subscribe((res:any)=>{
+    
       this.allProducts=res;
+
+      for(let product of this.allProducts){
+        product.imageName="http://localhost:9091/getImages/"+product.imageName;
+      }
+   
+      console.log(this.allProducts);
 
     },err=>{
       console.log("cannot fetch product list");
@@ -96,7 +146,7 @@ export class ProductComponent {
     this.productService.deleteProduct(productId).subscribe((res:any)=>{
       console.log(res);
       this.toastr.success("Success","product deleted successfully..")
-      this.getAllProduct();
+      this.getAllProduct()
     },err=>{
       console.log(err);
     })
@@ -109,7 +159,6 @@ export class ProductComponent {
     this.productId=product.productId;
     this.formData.controls['productName'].setValue(product.productName);
     this.formData.controls['productDescription'].setValue(product.productDescription);
-    this.formData.controls['productImageUrl'].setValue(product.productImageUrl);
     this.formData.controls['categoryName'].setValue(product.category.categoryName);
     this.formData.controls['quantity'].setValue(product.quantity);
   }
@@ -118,6 +167,10 @@ export class ProductComponent {
 
   updateProduct(){
     this.product=this.formData.value;
+    const imageFormData=this.prepareFormData();
+    this.imageService.uploadImages(imageFormData).subscribe((res:any)=>{
+      let image_name=res.resp
+    })
    this.productService.updateProduct(this.productId,this.product).subscribe((res:any)=>{
     console.log(res);
     this.toastr.success("Success","Product Updated Successfully..")
@@ -139,5 +192,80 @@ export class ProductComponent {
     })
   }
 
+  onFileSelected(event: any) {
+    console.log(event);
+    if (event.target.files) {
+      const file = event.target.files[0];
+  
+      const fileHandle: FileHandle = {
+        file: file,
+        url: this.sanitizer.bypassSecurityTrustUrl(
+          window.URL.createObjectURL(file)
+        )
+      }
+      this.productImage = fileHandle;
+    }
+  
+  }
+
+  // prepareFormData(): FormData {
+  //   const formData: FormData = new FormData();
+  
+  
+  
+  //   formData.append(
+  //     "file",
+  //     this.productImage.file,
+  //     this.productImage.file.name
+  //   )
+  //   return formData;
+  // }
+
+  // uploadMultipleImages(){
+  //   const formDatamulti=this.prepareFormData();
+  //   this.imageService.uploadMultipleImages(formDatamulti).subscribe((res:any)=>{
+  //     console.log(res);
+  //   },err=>{
+  //     console.log(err);
+  //   })
+  
+  //  }
+  
+
+  onFilesSelected(event:any){
+    console.log(event);
+    if (event.target.files) {
+  
+      for(var i=0;i<event.target.files.length;i++){
+        const file = event.target.files[i];
+  
+        const fileHandle: FileHandle = {
+          file: file,
+          url: this.sanitizer.bypassSecurityTrustUrl(
+            window.URL.createObjectURL(file)
+          )
+        }
+        this.images.push(fileHandle);
+      }
+      }
+      
+     
+  }
+  
+  prepareFormData(): FormData {
+    const formData: FormData = new FormData();
+  
+  
+   for(var i=0;i<this.images.length;i++){
+    formData.append(
+      "files",
+      this.images[i].file,
+      this.images[i].file.name
+    )
+   }
+  
+     
+    return formData;
+  }
 
 }

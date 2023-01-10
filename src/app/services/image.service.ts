@@ -7,9 +7,15 @@ import { Injectable } from '@angular/core';
 export class ImageService {
 
   constructor(private http:HttpClient) { }
-private BASE_URL="http://localhost:9090"
+private BASE_URL="http://localhost:9091"
 
   uploadImages(images:FormData){
     return this.http.post(`${this.BASE_URL}/upload-file`,images);
   }
+
+  uploadMultipleImages(multiImages:FormData){
+    return this.http.post(`${this.BASE_URL}/upload-files`,multiImages);
+  }
+
+  
 }
