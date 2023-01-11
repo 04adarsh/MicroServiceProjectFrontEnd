@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms"
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ToastrService } from 'ngx-toastr';
-
 import { FileHandle } from 'src/app/models/file-handle.model';
 import { CategoryService } from 'src/app/services/category.service';
 import { ImageService } from 'src/app/services/image.service';
@@ -10,13 +9,12 @@ import { ProductService } from '../../services/product.service';
 
 export class Product{
 
-    productId!:number
-    productName!:string
-    productDescription!: string
-    productImages!:string
-    categoryName!: string
-    quantity!:number
-
+  productId!:number
+  productName!:string
+  productDescription!:string
+  productImages:string[]=[]
+  category:any
+  quantity!:number
 
 
 }
@@ -41,7 +39,7 @@ export class ProductComponent {
   productImage!:FileHandle;
 
   productId!: number;
-  allProducts:any
+  allProducts:Product[]=[]
   formData!: FormGroup;
 
 
@@ -58,15 +56,15 @@ export class ProductComponent {
 
   ngOnInit() {
     this.formData = this.formBuilder.group({
-      productName: ['',Validators.required ],
-      productDescription: ['',Validators.required],
-      categoryName: ['',Validators.required ],
-      quantity: ['',Validators.required ]
+      productName: ['', ],
+      productDescription: ['',],
+      categoryName: ['', ],
+      quantity: ['', ]
 
     })
      this.getAllCategories();
-     this.getAllProduct();
-     console.log(this.allProducts)
+    //  this.getAllProduct();
+   
 
 
   }
@@ -104,49 +102,64 @@ export class ProductComponent {
     this.product=this.formData.value;
     const imageFormData=this.prepareFormData();
     this.imageService.uploadMultipleImages(imageFormData).subscribe((res:any)=>{
-      console.log(res)
-      let list=[];
-      list=res;
-      let image_name=list.toString();
-      if(image_name!="" || image_name!=null){
-        this.product.productImages=image_name;
-        this.productService.createProduct(this.product).subscribe((res:any)=>{
-          console.log(res);
-          this.toastr.success("success","product created successfully");
-          document.getElementById("closemodal")?.click();
-          this.getAllProduct();
-          this.formData.reset();
+      let arr=res;
+      let images={
+        "imageList":arr
+      }
+      let image_name=JSON.stringify(images);
+      console.log(image_name);
+      // if(image_name!="" || image_name!=null){
+      //   this.product.productImages=image_name;
+      //   this.productService.createProduct(this.product).subscribe((res:any)=>{
+      //     console.log(res);
+      //     this.toastr.success("success","product created successfully");
+      //     document.getElementById("closemodal")?.click();
+      //     // this.getAllProduct();
+      //     this.formData.reset();
         
-        },err=>{
-          console.log(err);
-        })
-      }
+      //   },err=>{
+      //     console.log(err);
+      //   })
+      // }
     
-    })
-
-  }
-
-  getAllProduct(){
-    this.productService.getAllProduct().subscribe((res:any)=>{
-    
-      this.allProducts=res;
-
-      for(let product of this.allProducts){
-        product.imageName="http://localhost:9091/getImages/"+product.imageName;
-      }
-   
-      console.log(this.allProducts);
-
     },err=>{
-      console.log("cannot fetch product list");
+      console.log(err);
     })
+
   }
+
+  // getAllProduct(){
+  //   this.productService.getAllProduct().subscribe((res:any)=>{
+  //     let prefix="http://localhost:9091/getImages/";
+  //     for(let i=0;i<res.length;i++){
+  //       let product=new Product();
+  //       product.productId=res[i].productId;
+  //       product.productName=res[i].productName;
+  //       product.productDescription=res[i].productDescription;
+  //       product.category=res[i].category
+  //       product.productImages=res[i].imageName.split(",");
+  //       product.quantity=res[i].quantity;
+
+    
+  //       for(let j=0;j<product.productImages.length;j++){
+  //         product.productImages[j]=prefix+product.productImages[j];
+  //       }
+
+  //       this.allProducts.push(product);
+  //     }
+
+  //     console.log(this.allProducts);
+
+  //   },err=>{
+  //     console.log("cannot fetch product list");
+  //   })
+  // }
 
   deleteProduct(productId:number){
     this.productService.deleteProduct(productId).subscribe((res:any)=>{
       console.log(res);
       this.toastr.success("Success","product deleted successfully..")
-      this.getAllProduct()
+      // this.getAllProduct()
     },err=>{
       console.log(err);
     })
@@ -176,7 +189,7 @@ export class ProductComponent {
     this.toastr.success("Success","Product Updated Successfully..")
     document.getElementById("closemodal")?.click();
     this.formData.reset();
-    this.getAllProduct();
+    // this.getAllProduct();
    },err=>{
     this.toastr.error("something went wrong..")
    })
@@ -236,7 +249,7 @@ export class ProductComponent {
     console.log(event);
     if (event.target.files) {
   
-      for(var i=0;i<event.target.files.length;i++){
+      for(let i=0;i<event.target.files.length;i++){
         const file = event.target.files[i];
   
         const fileHandle: FileHandle = {
@@ -256,7 +269,7 @@ export class ProductComponent {
     const formData: FormData = new FormData();
   
   
-   for(var i=0;i<this.images.length;i++){
+   for(let i=0;i<this.images.length;i++){
     formData.append(
       "files",
       this.images[i].file,
