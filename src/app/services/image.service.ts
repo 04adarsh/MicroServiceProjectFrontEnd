@@ -17,5 +17,7 @@ private BASE_URL="http://localhost:9091"
     return this.http.post(`${this.BASE_URL}/upload-files`,multiImages);
   }
 
-  
+  delteImage(imageName:string){
+    return this.http.delete(`${this.BASE_URL}/deleteImage/`+imageName);
+  }
 }

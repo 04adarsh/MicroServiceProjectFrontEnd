@@ -29,5 +29,13 @@ export class ProductService {
   }
 
 
+  getProductById(getId:number){
+    return this.http.get(`${this.BASE_URL}/get/`+getId);
+  }
+
+
+  
+
+
 
 }

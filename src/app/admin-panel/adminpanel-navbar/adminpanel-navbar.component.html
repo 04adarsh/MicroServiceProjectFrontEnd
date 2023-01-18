@@ -1,4 +1,4 @@
-<nav class="navbar bg-body-tertiary bg-light">
+<nav class="navbar bg-body-tertiary bg-secondary">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/admin-dashboard" >MyShop</a>
     <span>Welcome {{username}}</span>
@@ -6,17 +6,21 @@
       aria-controls="offcanvasNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+    <div class="offcanvas offcanvas-start bg-secondary" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Admin Menu</h5>
+        <h5 class="offcanvas-title text-light" id="offcanvasNavbarLabel">Admin Menu</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" id="close"></button>
       </div>
       <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+        <form class="d-flex mt-3 mb-3" role="search">
+          <input class="form-control rounded-0" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-warning rounded-0" type="submit">Search</button>
+        </form>
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 navbar-dark">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" routerLink="/admin-dashboard" (click)="close()">Home</a>
           </li>
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown w-50">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Manage
             </a>
@@ -32,11 +36,6 @@
             <a class="nav-link logout-hover" *ngIf="isLoggedIn" (click)="doLogout()">Logout</a>
           </li>
         </ul>
-
-        <form class="d-flex mt-3" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
       </div>
     </div>
   </div>

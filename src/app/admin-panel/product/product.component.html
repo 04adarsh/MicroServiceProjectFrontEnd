@@ -1,95 +1,111 @@
-
 <div class="container">
-    <button type="button" class="btn btn-primary my-4 mx-4" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="onAdd()">
-        Add Product
-    </button>
+  <button type="button" class="btn btn-primary my-4 mx-4" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    (click)="onAdd()">
+    Add Product
+  </button>
 </div>
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Product Id</th>
-          <th>Product Name</th>
-          <th>Product Description</th>
-          <th>Product Image</th>
-          <th>Product Category</th>
-          <th>Product Quantity</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let product of allProducts">
-          <td>{{product.productId}}</td>
-          <td>{{product.productName.substr(0,20)}}</td>
-          <td>{{product.productDescription.substr(0,30)}}</td>
-          <td>
-            <div class="container image-container" *ngFor="let image of product.productImages">
-              <img [src]="image" alt="" style="width: 50px;height:50px">
-            </div>
-          </td>
-          <td>{{product.category.categoryName}}</td>
-          <td>{{product.quantity}}</td>
-          <td>
-            <span><i class="bi bi-pencil-square mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal" style=" color:#0D6EFD" (click)="onEdit(product)"></i></span>
-          <span><i class="bi bi-trash3-fill mx-2" style="color: red;" (click)="deleteProduct(product.productId)"></i></span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Product Id</th>
+        <th>Product Name</th>
+        <th>Product Description</th>
+        <th>Product Image</th>
+        <th>Product Category</th>
+        <th>Product Quantity</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of allProducts">
+        <td>{{product.productId}}</td>
+        <td>{{product.productName.substr(0,20)}}</td>
+        <td>{{product.productDescription.substr(0,30)}}</td>
+        <td style="display: flex;flex-wrap: wrap;">
+          <div class="image-container" *ngFor="let image of product.imageName.imageList">
+            <img [attr.src]="'http://localhost:9091/getImages/'+image" alt="" style="width: 50px;height:50px">
+          </div>
+        </td>
+        <td>{{product.category.categoryName}}</td>
+        <td>{{product.quantity}}</td>
+        <td>
+          <span><i class="bi bi-pencil-square mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal"
+              style=" color:#0D6EFD" (click)="onEdit(product)"></i></span>
+          <span><i class="bi bi-trash3-fill mx-2" style="color: red;"
+              (click)="deleteProduct(product.productId)"></i></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-  <!-- <div class="container">
+<!-- <div class="container">
     <input type="file" multiple (change)="onFilesSelected($event)">
         <button class="btn btn-primary"type="submit" (click)="uploadMultipleImages()">upload</button>
   </div> -->
 
-  
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel" *ngIf="showAdd">Add Product</h1>
-          <h1 class="modal-title fs-5" id="exampleModalLabel" *ngIf="showUpdate">Update Product</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="formData">
-            <span *ngIf="!formData.valid" style="color: red;">*All fields are required</span>
-            <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Product Name</label>
-                <input type="text" class="form-control" formControlName="productName" id="exampleFormControlInput1" placeholder="Product Name">
-              </div>
-              <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Product Description</label>
-                <textarea class="form-control" formControlName="productDescription" id="exampleFormControlTextarea1" rows="3" placeholder="Product Description"></textarea>
-              </div>
-              <!-- <div class="mb-3">
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel" *ngIf="showAdd">Add Product</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel" *ngIf="showUpdate">Update Product</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formData">
+          <span *ngIf="!formData.valid" style="color: red;">*All fields are required</span>
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Product Name</label>
+            <input type="text" class="form-control" formControlName="productName" id="exampleFormControlInput1"
+              placeholder="Product Name">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Product Description</label>
+            <textarea class="form-control" formControlName="productDescription" id="exampleFormControlTextarea1"
+              rows="3" placeholder="Product Description"></textarea>
+          </div>
+          <!-- <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Image</label>
                 <input type="text" class="form-control" formControlName="productImageUrl" id="exampleFormControlInput1" placeholder="Image Url">
               </div>     -->
-              <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Category</label>
-                <select class="form-select" aria-label="Default select example" formControlName="categoryName" place>
-                  <option selected="selected" hidden></option>
-                  <option [ngValue]="category.categoryName" *ngFor="let category of categories">{{category.categoryName}}</option>
-                </select>    
-              </div>
-              <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Quantity</label>
-                <input type="number" class="form-control" formControlName="quantity" id="exampleFormControlInput1" placeholder="quantity">
-              </div>
-              <div>
-                <label for="exampleFormControlInput1" class="form-label">Upload Images</label>
-                <input  type="file" multiple (change)="onFilesSelected($event)">
-              </div>    
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closemodal">Close</button>
-          <button type="button" class="btn btn-primary" [disabled]="!formData.valid" (click)="addProduct()" *ngIf="showAdd">Add</button>
-          <button type="button" class="btn btn-primary" [disabled]="!formData.valid" *ngIf="showUpdate" (click)="updateProduct()">Update</button>
-        </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Category</label>
+            <select class="form-select" aria-label="Default select example" formControlName="categoryName" place>
+              <option selected="selected" hidden></option>
+              <option [ngValue]="category.categoryName" *ngFor="let category of categories">{{category.categoryName}}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Quantity</label>
+            <input type="number" class="form-control" formControlName="quantity" id="exampleFormControlInput1"
+              placeholder="quantity">
+          </div>
+          <div *ngIf="showUpdate" style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="image-container mb-4" *ngFor="let image of onUpdateProduct.imageName.imageList" style="display: flex;">
+              <img [attr.src]="'http://localhost:9091/getImages/'+image" alt="" style="height: 70px;width:70px">
+              <span><i class="bi bi-trash3-fill mx-2" style="color: red;cursor: pointer;" (click)="deleteImage(image,onUpdateProduct)"></i></span>
+            </div>
+          </div>
+
+          <div>
+            <label for="exampleFormControlInput1" class="form-label" >Upload Images</label>
+            <input type="file" #fileInput multiple (change)="onFilesSelected($event)">
+          </div>
+        </form>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="clearFileData()" id="closemodal">Close</button>
+        <button type="button" class="btn btn-primary" [disabled]="!formData.valid" (click)="addProduct()"
+          *ngIf="showAdd">Add</button>
+        <button type="button" class="btn btn-primary" [disabled]="!formData.valid" *ngIf="showUpdate"
+          (click)="updateProduct()">Update</button>
+      </div>
+      <!-- {{formData.value | json}} -->
     </div>
   </div>
+</div>
